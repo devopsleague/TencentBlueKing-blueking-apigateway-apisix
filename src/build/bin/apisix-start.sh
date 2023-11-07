@@ -1,6 +1,7 @@
 #!/bin/sh
 echo "starting......"
 
+
 # if standaloneConfigPath not empty, watch the path
 if [ x"${standaloneConfigPath}" != x"" ]
 then
@@ -16,6 +17,11 @@ then
     echo "config-watcher for ${standaloneConfigPath} started"
 fi
 
+# start
+echo "start apisix"
+apisix start
+echo "apisix started"
+
 # start nginx error to sentry
 if [ x"${BK_APIGW_NGINX_ERROR_LOG_SENTRY_DSN}" != x"" ]
 then
@@ -28,9 +34,8 @@ fi
 
 echo "start config-watcher for ${apisixDebugConfigPath}(note: will wait until the container quit)"
 # note the shell will wait here, so, YOU SHOULD NOT PUT ANY COMMANDS AFTER HERE
-sh /data/bkgateway/bin/config-watcher-start.sh "-sourcePath ${apisixDebugConfigPath} -destPath /usr/local/apisix/conf -files debug.yaml -isConfigMap" &
+sh /data/bkgateway/bin/config-watcher-start.sh "-sourcePath ${apisixDebugConfigPath} -destPath /usr/local/apisix/conf -files debug.yaml -isConfigMap"
 
-echo "start apisix"
-/usr/bin/apisix init && /usr/bin/apisix init_etcd && /usr/local/openresty/bin/openresty -p /usr/local/apisix -g 'daemon off;'
 
-echo "quit"
+echo "done"
+
